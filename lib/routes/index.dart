@@ -1,0 +1,11 @@
+const String onboardingRoute = '/';
+const String authenticatedRoute = '/home';
+const String homeScreenRoute = '/home-screen';
+const String transactionsRoute = '/transactions';
+const String addNewRoute = '/addnew';
+const String plansRoutes = '/plans';
+const String profileRoute = '/profile';
+const String settingsRoute = '/settings';
+const String loginRoute = '/login';
+const String registerRoute = '/register';
+const String forgotPasswordRoute = '/forgot-password';
