@@ -10,7 +10,7 @@ class HomeTimeline extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(color: Colors.grey[100]),
       child: Transform.translate(
-        offset: const Offset(0, -50),
+        offset: const Offset(0, -30),
         child: Container(
           decoration: BoxDecoration(color: Colors.grey[100]),
           padding: const EdgeInsets.only(top: 40, right: 20, left: 20),

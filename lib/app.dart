@@ -1,6 +1,7 @@
 import 'package:cashbuddy/screens/sub/add_new_expense.dart';
 import 'package:cashbuddy/screens/sub/add_new_income.dart';
 import 'package:cashbuddy/screens/sub/add_plan.dart';
+import 'package:cashbuddy/screens/sub/calculate_budget.dart';
 import 'package:cashbuddy/screens/sub/edit_plan.dart';
 import 'package:cashbuddy/screens/sub/notifications.dart';
 import 'package:cashbuddy/screens/sub/reports.dart';
@@ -73,6 +74,7 @@ class _MainAppState extends State<MainApp> {
         notificationsRoute: (context) => const NotificationsScreen(),
         reportsRoute: (context) => const ReportsScreen(),
         addPlanRoute: (context) => const AddPlan(),
+        calculateBudgetRoute: (context) => const CalculateBudget()
       },
       onGenerateRoute: (settings) {
         if (settings.name == editPlanRoute) {

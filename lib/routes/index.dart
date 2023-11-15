@@ -16,6 +16,7 @@ const String notificationsRoute = '/notification';
 const String reportsRoute = '/reports';
 const String addPlanRoute = '/add-new-plan';
 const String editPlanRoute = '/edit-plan';
+const String calculateBudgetRoute = '/calculate-budget';
 
 // Auth Screens
 const String loginRoute = '/login';

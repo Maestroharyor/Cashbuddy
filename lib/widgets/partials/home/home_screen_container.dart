@@ -228,8 +228,9 @@ class _HomeScreenContainerState extends State<HomeScreenContainer> {
                   ]),
             ),
           ),
+          const HomeActions(),
           Transform.translate(
-            offset: const Offset(0, -50),
+            offset: const Offset(0, -30),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
@@ -282,7 +283,6 @@ class _HomeScreenContainerState extends State<HomeScreenContainer> {
               ),
             ),
           ),
-          const HomeActions(),
           const HomeTimeline(),
         ],
       ),

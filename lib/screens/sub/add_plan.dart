@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cashbuddy/widgets/partials/add-plan/add_plan_container.dart';
 
 class AddPlan extends StatefulWidget {
   const AddPlan({super.key});
@@ -10,6 +11,8 @@ class AddPlan extends StatefulWidget {
 class _AddPlanState extends State<AddPlan> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const Scaffold(
+      body: SafeArea(child: SingleChildScrollView(child: AddPlanContainer())),
+    );
   }
 }
