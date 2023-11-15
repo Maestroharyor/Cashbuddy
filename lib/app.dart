@@ -1,3 +1,4 @@
+import 'package:cashbuddy/screens/main/splash.dart';
 import 'package:cashbuddy/screens/sub/add_new_expense.dart';
 import 'package:cashbuddy/screens/sub/add_new_income.dart';
 import 'package:cashbuddy/screens/sub/add_plan.dart';
@@ -54,10 +55,13 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: appName,
-      initialRoute: _showOnboarding ? onboardingRoute : authenticatedRoute,
+      initialRoute: splashRoute,
+      // initialRoute: _showOnboarding ? onboardingRoute : authenticatedRoute,
       theme: appTheme,
       routes: {
+        splashRoute: (context) => SplashScreen(showOnboarding: _showOnboarding),
         onboardingRoute: (context) =>
             OnboardingScreen(setOnboardingViewed: _setOnboardingViewed),
         loginRoute: (context) => const LoginScreen(),

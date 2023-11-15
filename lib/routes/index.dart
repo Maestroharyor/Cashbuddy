@@ -1,4 +1,5 @@
 const String onboardingRoute = '/';
+const String splashRoute = '/splash';
 const String authenticatedRoute = '/home';
 
 // Main Screens
