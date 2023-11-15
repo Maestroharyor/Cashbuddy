@@ -57,7 +57,7 @@ class OnboardingScreen extends StatelessWidget {
           ),
         ],
         totalPage: 3,
-        speed: 1.8,
+        speed: 2.8,
         pageBodies: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 40),

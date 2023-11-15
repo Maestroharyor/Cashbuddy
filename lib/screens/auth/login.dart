@@ -93,6 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // Implement your login logic here
                     print('Email: $email, Password: $password');
+                    Navigator.of(context).popUntil((route) => route.isFirst);
                     Navigator.pushReplacementNamed(context, authenticatedRoute);
                   },
                   child: const Text('Login',

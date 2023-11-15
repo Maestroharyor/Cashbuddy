@@ -1,3 +1,4 @@
+import 'package:cashbuddy/widgets/partials/home/home_actions.dart';
 import 'package:flutter/material.dart';
 import 'package:cashbuddy/screens/sub/notifications.dart';
 import 'package:cashbuddy/screens/sub/reports.dart';
@@ -281,6 +282,7 @@ class _HomeScreenContainerState extends State<HomeScreenContainer> {
               ),
             ),
           ),
+          const HomeActions(),
           const HomeTimeline(),
         ],
       ),

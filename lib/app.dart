@@ -1,3 +1,9 @@
+import 'package:cashbuddy/screens/sub/add_new_expense.dart';
+import 'package:cashbuddy/screens/sub/add_new_income.dart';
+import 'package:cashbuddy/screens/sub/add_plan.dart';
+import 'package:cashbuddy/screens/sub/edit_plan.dart';
+import 'package:cashbuddy/screens/sub/notifications.dart';
+import 'package:cashbuddy/screens/sub/reports.dart';
 import 'package:flutter/material.dart';
 import 'package:cashbuddy/config/theme/app_theme.dart';
 import 'package:cashbuddy/data/index.dart';
@@ -54,7 +60,7 @@ class _MainAppState extends State<MainApp> {
         onboardingRoute: (context) =>
             OnboardingScreen(setOnboardingViewed: _setOnboardingViewed),
         loginRoute: (context) => const LoginScreen(),
-        forgotPasswordRoute: (context) => const ForgotPassword(),
+        forgotPasswordRoute: (context) => const ForgotPasswordScreen(),
         registerRoute: (context) => const RegisterScreen(),
         authenticatedRoute: (context) => const AuthenticatedScreen(),
         homeScreenRoute: (context) => const HomeScreen(),
@@ -62,6 +68,19 @@ class _MainAppState extends State<MainApp> {
         addNewRoute: (context) => const AddNewScreen(),
         plansRoutes: (context) => const PlansScreen(),
         settingsRoute: (context) => const SettingsScreen(),
+        addNewExpenseRoute: (context) => const AddNewExpenseScreen(),
+        addNewIncomeRoute: (context) => const AddNewIncomeScreen(),
+        notificationsRoute: (context) => const NotificationsScreen(),
+        reportsRoute: (context) => const ReportsScreen(),
+        addPlanRoute: (context) => const AddPlan(),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == editPlanRoute) {
+          return MaterialPageRoute(
+            builder: (context) => const EditPlan(),
+          );
+        }
+        return null;
       },
     );
   }
@@ -151,184 +170,3 @@ class _AuthenticatedScreenState extends State<AuthenticatedScreen> {
     );
   }
 }
-
-// class MainApp extends StatefulWidget {
-//   const MainApp({Key? key}) : super(key: key);
-
-//   @override
-//   _MainAppState createState() => _MainAppState();
-// }
-
-// class _MainAppState extends State<MainApp> {
-//   late SharedPreferences _prefs;
-//   bool _showOnboarding = true;
-//   bool _isLoggedIn = false;
-//   bool _isRegisterScreen = false;
-//   int _currentIndex = 0;
-
-//   final List<Widget> _pages = [
-//     const HomeScreen(),
-//     const TransactionsScreen(),
-//     const AddNewScreen(),
-//     const PlansScreen(),
-//     const SettingsScreen(),
-//   ];
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _loadPreferences();
-//   }
-
-//   _loadPreferences() async {
-//     _prefs = await SharedPreferences.getInstance();
-//     setState(() {
-//       _showOnboarding = _prefs.getBool('showOnboarding') ?? true;
-//       _isLoggedIn = _prefs.getBool('isLoggedIn') ?? false;
-//     });
-//   }
-
-//   _setOnboardingViewed() {
-//     setState(() {
-//       _showOnboarding = false;
-//     });
-//   }
-
-//   _login() {
-//     setState(() {
-//       _isLoggedIn = true;
-//     });
-//   }
-
-//   _logout() {
-//     setState(() {
-//       _isLoggedIn = false;
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     if (_showOnboarding) {
-//       return _buildOnboardingScreen();
-//     } else {
-//       if (_isLoggedIn) {
-//         return _buildMainApp();
-//       }
-//       if (_isRegisterScreen && !_isLoggedIn) {
-//         return _buildRegisterScreen();
-//       }
-
-//       if (!_isLoggedIn) {
-//         return _buildLoginScreen();
-//       }
-
-//       return _buildMainApp();
-//     }
-//   }
-
-//   Widget _buildOnboardingScreen() {
-//     return OnboardingScreen(
-//       onLoginPressed: _buildLoginScreen,
-//       onRegisterPressed: _buildRegisterScreen,
-//       setOnboardingViewed: _setOnboardingViewed,
-//     );
-//   }
-
-//   Widget _buildLoginScreen() {
-//     _setOnboardingViewed();
-//     return LoginScreen(
-//       onLoginSuccess: () {
-//         _login();
-//       },
-//     );
-//   }
-
-//   Widget _buildRegisterScreen() {
-//     _setOnboardingViewed();
-//     setState(() {
-//       _isRegisterScreen = true;
-//     });
-//     return RegisterScreen(
-//       onRegisterSuccess: () {
-//         _login();
-//       },
-//     );
-//   }
-
-//   Widget _buildMainApp() {
-//     return Scaffold(
-//       body: _buildMainContent(),
-//       bottomNavigationBar: BottomNavigationBar(
-//         type: BottomNavigationBarType.fixed,
-//         unselectedItemColor: Colors.grey,
-//         unselectedLabelStyle: const TextStyle(color: Colors.grey, fontSize: 11),
-//         selectedLabelStyle:
-//             TextStyle(color: Theme.of(context).primaryColor, fontSize: 11),
-//         selectedItemColor: Theme.of(context).primaryColor,
-//         currentIndex: _currentIndex,
-//         onTap: (index) {
-//           setState(() {
-//             _currentIndex = index;
-//           });
-//         },
-//         showUnselectedLabels: true,
-//         items: [
-//           const BottomNavigationBarItem(
-//             icon: Icon(
-//               Icons.home,
-//               size: 22,
-//             ),
-//             label: 'Home',
-//           ),
-//           const BottomNavigationBarItem(
-//             icon: Icon(
-//               Icons.currency_exchange,
-//               size: 22,
-//             ),
-//             label: 'Transactions',
-//           ),
-//           BottomNavigationBarItem(
-//             backgroundColor: Theme.of(context).primaryColor,
-//             icon: Transform.translate(
-//               offset: const Offset(0.0, 5.0),
-//               child: Container(
-//                 padding: const EdgeInsets.all(10.0),
-//                 decoration: BoxDecoration(
-//                   shape: BoxShape.circle,
-//                   color: Theme.of(context).primaryColor,
-//                 ),
-//                 child: const Icon(
-//                   Icons.add,
-//                   size: 24,
-//                   color: Colors.white,
-//                 ),
-//               ),
-//             ),
-//             label: '',
-//           ),
-//           const BottomNavigationBarItem(
-//             icon: Icon(Icons.track_changes, size: 22),
-//             label: 'Plans',
-//           ),
-//           const BottomNavigationBarItem(
-//             icon: Icon(Icons.settings, size: 22),
-//             label: 'Settings',
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Widget _buildMainContent() {
-//     return IndexedStack(
-//       index: _currentIndex,
-//       children: _pages,
-//     );
-//   }
-// }
-
-// void main() {
-//   runApp(const MaterialApp(
-//     home: MainApp(),
-//   ));
-// }

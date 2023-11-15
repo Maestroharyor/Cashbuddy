@@ -177,6 +177,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             'First Name: $firstName, Last Name: $lastName, Phone Number: $phoneNumber, Password: $password');
 
                         // Call the callback to indicate successful registration
+                        Navigator.of(context)
+                            .popUntil((route) => route.isFirst);
                         Navigator.pushReplacementNamed(
                             context, authenticatedRoute);
                       } else {
