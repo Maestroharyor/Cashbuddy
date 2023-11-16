@@ -21,7 +21,7 @@ class HomeActions extends StatelessWidget {
             int columns = (constraints.maxWidth < 500) ? 1 : 2;
             double aspectRatio = (constraints.maxWidth < 500) ? 2 : 6;
             return GridView.count(
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               crossAxisCount: 2,
               crossAxisSpacing: 20.0,
               mainAxisSpacing: 20.0,
@@ -94,7 +94,7 @@ class ActionButton extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         constraints: BoxConstraints(maxWidth: maxWidth),
-        padding: const EdgeInsets.all(15),
+        padding: maxWidth * 2 < 400 ? const EdgeInsets.all(15) : const EdgeInsets.all(10),
         decoration: BoxDecoration(
           color: backgroundColor,
           border: Border.all(width: 1, color: color),
@@ -107,7 +107,7 @@ class ActionButton extends StatelessWidget {
                 children: [
                     Icon(icon, color: color, size: 30),
                     const SizedBox(width: 5),
-                    SizedBox(
+                    const SizedBox(
                       height: 7,
                     ),
                     Text(label, style: TextStyle(fontSize: 13, color: color))
@@ -118,7 +118,7 @@ class ActionButton extends StatelessWidget {
                 children: [
                     Icon(icon, color: color, size: 30),
                     const SizedBox(width: 5),
-                    Text(label, style: TextStyle(fontSize: 13, color: color))
+                    Text(label, style: TextStyle(fontSize: 12, color: color))
                   ]),
       ),
     );

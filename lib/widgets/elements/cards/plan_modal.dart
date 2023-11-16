@@ -219,7 +219,7 @@ class _IncomePlanFormState extends State<IncomePlanForm> {
       children: [
         const SizedBox(height: 15),
         Text(
-          'Add Income Disbursement Plan',
+          'Add Budget Plan',
           style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,

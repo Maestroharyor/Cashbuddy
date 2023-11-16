@@ -1,6 +1,6 @@
+import 'package:cashbuddy/routes/index.dart';
 import 'package:flutter/material.dart';
 import 'package:cashbuddy/models/all_models.dart';
-import './plan_modal.dart';
 
 class PrimaryPlanCard extends StatefulWidget {
   const PrimaryPlanCard({super.key});
@@ -10,8 +10,7 @@ class PrimaryPlanCard extends StatefulWidget {
 }
 
 class _PrimaryPlanCardState extends State<PrimaryPlanCard> {
-  DisbursementPlan plan =
-      DisbursementPlan(title: "Income Disbursement Plan", categories: [
+  DisbursementPlan plan = DisbursementPlan(title: "Budget Plan", categories: [
     PlanCategory(title: "Fixed Costs", percentage: 30, color: Colors.grey[700]),
     PlanCategory(
         title: "Investments", percentage: 30, color: Colors.green[700]),
@@ -51,7 +50,10 @@ class _PrimaryPlanCardState extends State<PrimaryPlanCard> {
                   ),
                   IconButton(
                       onPressed: () {
-                        _openModal(context);
+                        // _openModal(context);
+                        print("Clicked");
+                        Navigator.pushNamed(context, editPlanRoute,
+                            arguments: {'plan': plan});
                       },
                       icon: const Icon(Icons.edit))
                 ],
@@ -67,22 +69,6 @@ class _PrimaryPlanCardState extends State<PrimaryPlanCard> {
             ]),
           ),
         ));
-  }
-
-  // Function to open the modal form
-  void _openModal(BuildContext context) {
-    showModalBottomSheet(
-      enableDrag: true,
-      useSafeArea: true,
-      context: context,
-      isScrollControlled: true, // Ensures the modal takes up the full screen
-      builder: (context) {
-        return Container(
-            // height: double.infinity,
-            padding: const EdgeInsets.all(16.0),
-            child: const IncomePlanForm());
-      },
-    );
   }
 }
 

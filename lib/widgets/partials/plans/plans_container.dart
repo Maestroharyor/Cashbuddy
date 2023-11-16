@@ -17,7 +17,7 @@ class _PlansContainerState extends State<PlansContainer> {
         Container(
           width: double.infinity,
           padding:
-              const EdgeInsets.only(left: 20, right: 20, top: 40, bottom: 40),
+              const EdgeInsets.only(left: 20, right: 20, top: 40, bottom: 80),
           decoration: BoxDecoration(
               borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(10),
@@ -39,10 +39,18 @@ class _PlansContainerState extends State<PlansContainer> {
                 ),
               ]),
         ),
-        const SizedBox(
-          height: 30,
+        Transform.translate(
+          offset: const Offset(0, -30),
+          child: Container(
+              padding: const EdgeInsets.only(top: 40),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(30),
+                    topLeft: Radius.circular(30)),
+              ),
+              child: const PrimaryPlanCard()),
         ),
-        const PrimaryPlanCard(),
       ]),
     );
   }

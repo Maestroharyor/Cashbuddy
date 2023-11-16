@@ -6,9 +6,9 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(child: SingleChildScrollView(child: SettingsContainer())),
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
+      body: const SafeArea(child: SingleChildScrollView(child: SettingsContainer())),
     );
   }
 }

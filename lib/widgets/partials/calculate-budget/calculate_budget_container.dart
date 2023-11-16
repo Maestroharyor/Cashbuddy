@@ -12,17 +12,13 @@ class _CalculateBudgetContainerState extends State<CalculateBudgetContainer> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey[100],
+      color: Colors.white,
       child: Column(children: [
         Container(
           width: double.infinity,
           padding:
-              const EdgeInsets.only(left: 20, right: 20, top: 40, bottom: 40),
-          decoration: BoxDecoration(
-              borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10)),
-              color: Colors.blue[900]),
+              const EdgeInsets.only(left: 20, right: 20, top: 40, bottom: 80),
+          decoration: BoxDecoration(color: Colors.blue[900]),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

@@ -1,3 +1,4 @@
+import 'package:cashbuddy/models/all_models.dart';
 import 'package:cashbuddy/screens/main/splash.dart';
 import 'package:cashbuddy/screens/sub/add_new_expense.dart';
 import 'package:cashbuddy/screens/sub/add_new_income.dart';
@@ -82,8 +83,15 @@ class _MainAppState extends State<MainApp> {
       },
       onGenerateRoute: (settings) {
         if (settings.name == editPlanRoute) {
+          // Extract parameters from settings.arguments
+          Map<String, dynamic> arguments =
+              settings.arguments as Map<String, dynamic>;
+
+          // Extract DisbursementPlan from the map
+          DisbursementPlan plan = arguments['plan'] as DisbursementPlan;
+
           return MaterialPageRoute(
-            builder: (context) => const EditPlan(),
+            builder: (context) => EditPlan(plan: plan),
           );
         }
         return null;
@@ -168,8 +176,8 @@ class _AuthenticatedScreenState extends State<AuthenticatedScreen> {
             label: 'Plans',
           ),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.settings, size: 22),
-            label: 'Settings',
+            icon: Icon(Icons.person, size: 22),
+            label: 'Me',
           ),
         ],
       ),

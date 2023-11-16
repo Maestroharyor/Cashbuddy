@@ -32,6 +32,7 @@ class OnboardingScreen extends StatelessWidget {
         ),
         onFinish: () {
           setOnboardingViewed();
+          Navigator.of(context).popUntil((route) => route.isFirst);
           Navigator.pushReplacementNamed(context, registerRoute);
         },
         skipTextButton: Text(
@@ -64,7 +65,7 @@ class OnboardingScreen extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 const SizedBox(
-                  height: 480,
+                  height: 380,
                 ),
                 Text(
                   'Welcome to CashBuddy!',
@@ -93,7 +94,7 @@ class OnboardingScreen extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 const SizedBox(
-                  height: 480,
+                  height: 380,
                 ),
                 Text(
                   'Track your Income',
@@ -121,7 +122,7 @@ class OnboardingScreen extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 const SizedBox(
-                  height: 480,
+                  height: 380,
                 ),
                 Text(
                   'Automatic Notifications and Transfers',

@@ -45,11 +45,11 @@ class _TransactionsContainerState extends State<TransactionsContainer> {
         Container(
           width: double.infinity,
           padding:
-              const EdgeInsets.only(left: 20, right: 20, top: 40, bottom: 40),
+              const EdgeInsets.only(left: 20, right: 20, top: 40, bottom: 80),
           decoration: BoxDecoration(
               borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10)),
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30)),
               color: Colors.blue[900]),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -108,17 +108,24 @@ class _TransactionsContainerState extends State<TransactionsContainer> {
                 )
               ]),
         ),
-        Container(
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
-          decoration: BoxDecoration(color: Colors.grey[100]),
-          child: Column(
-            children: [
-              TransactionCard(),
-              TransactionCard(),
-              TransactionCard(),
-              TransactionCard(),
-              TransactionCard(),
-            ],
+        Transform.translate(
+          offset: const Offset(0, -50),
+          child: Container(
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 40),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(30), topLeft: Radius.circular(30)),
+            ),
+            child: Column(
+              children: [
+                TransactionCard(),
+                TransactionCard(),
+                TransactionCard(),
+                TransactionCard(),
+                TransactionCard(),
+              ],
+            ),
           ),
         )
       ]),

@@ -12,6 +12,7 @@ class _AddPlanState extends State<AddPlan> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
+      resizeToAvoidBottomInset: true,
       body: SafeArea(child: SingleChildScrollView(child: AddPlanContainer())),
     );
   }

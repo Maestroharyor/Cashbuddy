@@ -25,7 +25,7 @@ class SplashScreen extends StatelessWidget {
             height: 70,
             child: Image.asset("assets/icons/cashbuddy-bare.png"),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           // Text("Cash Buddy",
@@ -34,7 +34,7 @@ class SplashScreen extends StatelessWidget {
       ),
       duration: const Duration(milliseconds: 1500),
       animationDuration: const Duration(milliseconds: 1000),
-      onAnimationEnd: () {
+      onEnd: () {
         print("End");
         if (showOnboarding) {
           Navigator.pushReplacementNamed(context, onboardingRoute);
@@ -42,6 +42,7 @@ class SplashScreen extends StatelessWidget {
           Navigator.pushReplacementNamed(context, authenticatedRoute);
         }
       },
+
       // asyncNavigationCallback: () async {
       //   await Future.delayed(const Duration(seconds: 3));
       //   if (context.mounted) {
