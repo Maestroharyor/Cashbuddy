@@ -11,8 +11,9 @@ class CalculateBudget extends StatefulWidget {
 class _CalculateBudgetState extends State<CalculateBudget> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SafeArea(
+    return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      body: const SafeArea(
           child: SingleChildScrollView(child: CalculateBudgetContainer())),
     );
   }

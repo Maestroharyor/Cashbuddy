@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 String getTimeOfDay() {
   final currentHour = DateTime.now().hour;
 
@@ -22,4 +24,9 @@ DateTime getRandomDateBetweenYears(int startYear, int endYear) {
   final randomDate = DateTime.fromMillisecondsSinceEpoch(randomTime);
 
   return randomDate;
+}
+
+String formatCurrency(int amount) {
+  final formatter = NumberFormat('#,##0', 'en_US');
+  return formatter.format(amount);
 }
