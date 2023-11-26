@@ -121,14 +121,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.9"
-  email_validator:
-    dependency: "direct main"
-    description:
-      name: email_validator
-      sha256: e9a90f27ab2b915a27d7f9c2a7ddda5dd752d6942616ee83529b686fc086221b
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.17"
   equatable:
     dependency: transitive
     description:
@@ -408,6 +400,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.5"
+  searchfield:
+    dependency: "direct main"
+    description:
+      name: searchfield
+      sha256: "329b058de69c370218ec66c15234cb9fe6a5c9a4359fa92aa89188eb50707bf6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.9"
   shared_preferences:
     dependency: "direct main"
     description:

@@ -17,7 +17,7 @@ class _AddPlanContainerState extends State<AddPlanContainer> {
   DropdownEditingController<String>? categoryTitleController =
       DropdownEditingController<String>();
   TextEditingController categoryPercentageController = TextEditingController();
-  List<String> nonSelectedCategories = incomeAndExpenseCategories;
+  List<String> nonSelectedCategories = budgetPlanCategories;
   List<PlanCategory> categories = [];
   double totalPercentage = 0;
   List<Color> colorList = _generateColorList(64);

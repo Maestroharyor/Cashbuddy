@@ -50,10 +50,10 @@ List<String> expenseCategories = [
 
 List<String> incomeCategories = [
   "Salary",
-  "Freelance Income",
-  "Business Income",
-  "Investment Income",
-  "Rental Income",
+  "Freelance ",
+  "Business",
+  "Investment ",
+  "Rental",
   "Gifts",
   "Grants",
   "Refunds",
@@ -62,7 +62,7 @@ List<String> incomeCategories = [
   "Child Support",
   "Royalties",
   "Tips",
-  "Interest Income",
+  "Interest",
   "Dividends",
   "Bonus",
   "Commissions",
@@ -104,7 +104,7 @@ List<String> incomeCategories = [
   "Other",
 ];
 
-List<String> incomeAndExpenseCategories = [
+List<String> budgetPlanCategories = [
   "Fixed Costs",
   "Rent or Mortgage",
   "Utilities",

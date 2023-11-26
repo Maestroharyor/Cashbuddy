@@ -3,6 +3,7 @@ import 'package:dropdown_plus/dropdown_plus.dart';
 import 'package:cashbuddy/data/index.dart';
 import 'package:intl/intl.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
+import 'package:searchfield/searchfield.dart';
 
 class AddNewExpenseContainer extends StatefulWidget {
   const AddNewExpenseContainer({super.key});
@@ -107,6 +108,47 @@ class _AddNewExpenseContainerState extends State<AddNewExpenseContainer> {
                 const SizedBox(
                   height: 30,
                 ),
+                SearchField(
+                  // controller: selectedCategoryTitleController,
+                  key: const Key('searchfield'),
+                  hint: 'Search Budget Category Title',
+                  itemHeight: 50,
+                  scrollbarDecoration: ScrollbarDecoration(),
+                  onTapOutside: (x) {},
+                  searchInputDecoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      suffixIcon: Icon(Icons.arrow_drop_down),
+                      labelText: "Expense Category"),
+                  emptyWidget: Container(
+                      padding: const EdgeInsets.only(
+                          top: 20, bottom: 20, left: 10, right: 10),
+                      child: const Text(
+                        "Budget Category not found",
+                        style: TextStyle(color: Colors.grey),
+                      )),
+                  suggestionsDecoration: SuggestionDecoration(
+                    color: Colors.grey[100],
+                  ),
+                  suggestions: expenseCategories
+                      .map((e) => SearchFieldListItem<String>(e,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 4.0, horizontal: 12),
+                            child: Text(e,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Theme.of(context).primaryColor)),
+                          )))
+                      .toList(),
+                ),
+                // Positioned(
+                //     right: 0,
+                //     bottom: 13,
+                //     child: Container(
+                //       decoration: const BoxDecoration(color: Colors.white),
+                //       child: Transform.rotate(
+                //           angle: 20.4, child: const Icon(Icons.chevron_right)),
+                //     )),
                 TextDropdownFormField(
                   options: expenseCategories,
                   decoration: const InputDecoration(

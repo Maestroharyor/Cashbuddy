@@ -34,4 +34,8 @@ class DisbursementPlan {
   final List<PlanCategory> categories;
 
   DisbursementPlan({required this.title, required this.categories});
+
+  clone() {
+    return DisbursementPlan(title: title, categories: categories);
+  }
 }

@@ -13,13 +13,11 @@ class _PrimaryPlanCardState extends State<PrimaryPlanCard> {
   DisbursementPlan plan = DisbursementPlan(title: "Budget Plan", categories: [
     PlanCategory(title: "Fixed Costs", percentage: 30, color: Colors.grey[700]),
     PlanCategory(
-        title: "Investments", percentage: 30, color: Colors.green[700]),
-    PlanCategory(title: "Savings", percentage: 30, color: Colors.blue[700]),
-    PlanCategory(title: "Debts", percentage: 30, color: Colors.purple[700]),
-    PlanCategory(title: "Tithe", percentage: 30, color: Colors.blue[700]),
-    PlanCategory(title: "Spending", percentage: 30, color: Colors.red[700]),
-    PlanCategory(
-        title: "Miscellaneous", percentage: 30, color: Colors.grey[700]),
+        title: "Investments", percentage: 10, color: Colors.green[700]),
+    PlanCategory(title: "Savings", percentage: 5, color: Colors.blue[700]),
+    PlanCategory(title: "Debts", percentage: 20, color: Colors.purple[700]),
+    PlanCategory(title: "Tithe", percentage: 10, color: Colors.blue[700]),
+    PlanCategory(title: "Spending", percentage: 25, color: Colors.red[700]),
   ]);
 
   // Create a global key for the form
@@ -50,10 +48,8 @@ class _PrimaryPlanCardState extends State<PrimaryPlanCard> {
                   ),
                   IconButton(
                       onPressed: () {
-                        // _openModal(context);
-                        print("Clicked");
                         Navigator.pushNamed(context, editPlanRoute,
-                            arguments: {'plan': plan});
+                            arguments: {'plan': plan.clone()});
                       },
                       icon: const Icon(Icons.edit))
                 ],

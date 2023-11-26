@@ -1,4 +1,5 @@
 import 'package:cashbuddy/widgets/elements/cb_text.dart';
+import 'package:dropdown_plus/dropdown_plus.dart';
 import 'package:flutter/material.dart';
 
 class SettingsContainer extends StatelessWidget {
@@ -409,6 +410,21 @@ class AccountSettingsSection extends StatelessWidget {
           color: Colors.white, borderRadius: BorderRadius.circular(20)),
       child: Column(
         children: [
+          TextDropdownFormField(
+            options: const ["NGN", "USD", "EUR", "GPB", "JPY"],
+            // controller: categoryTitleController,
+            decoration: InputDecoration(
+                // border: OutlineInputBorder(),
+                suffixIcon: const Icon(Icons.arrow_drop_down),
+                label: Text(
+                  "Preferred Currency",
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: Colors.grey[900]),
+                )),
+            dropdownHeight: 200,
+          ),
           Container(
             padding: const EdgeInsets.only(bottom: 5, top: 5),
             decoration: BoxDecoration(
@@ -512,30 +528,51 @@ class AccountSettingsSection extends StatelessWidget {
               ],
             ),
           ),
-          Container(
-            padding: const EdgeInsets.only(bottom: 15, top: 15),
-            // decoration: BoxDecoration(
-            //     border: Border(
-            //   bottom: BorderSide(
-            //     color: Colors.grey[400]!, // specify your color here
-            //     width: 1.0, // specify the border width
-            //   ),
-            // )),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          Material(
+            // borderRadius: BorderRadius.circular(8),
+            clipBehavior: Clip.hardEdge,
+            color: Colors.white,
+            animationDuration: const Duration(milliseconds: 100),
+            child: InkWell(
+              onTap: () {},
+              child: Container(
+                padding: const EdgeInsets.only(bottom: 15, top: 15),
+                // decoration: const BoxDecoration(
+                //     // color: Colors.white,
+                //     borderRadius: BorderRadius.all(Radius.circular(8))),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Reset Password",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                    Expanded(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Icon(Icons.account_circle_rounded,
+                          //     color: Colors.grey[600]),
+                          // const SizedBox(
+                          //   width: 15,
+                          // ),
+                          Text(
+                            "Reset Password",
+                            style: TextStyle(
+                                color: Colors.grey[600],
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14),
+                          ),
+                        ],
+                      ),
                     ),
+                    const SizedBox(
+                      width: 30,
+                    ),
+                    const Icon(
+                      Icons.chevron_right,
+                      color: Colors.grey,
+                      size: 30,
+                    )
                   ],
                 ),
-                Icon(Icons.chevron_right, color: Colors.grey)
-              ],
+              ),
             ),
           ),
         ],

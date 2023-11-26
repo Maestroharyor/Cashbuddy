@@ -1,10 +1,9 @@
 import 'dart:math';
-
 import 'package:cashbuddy/data/index.dart';
 import 'package:cashbuddy/models/all_models.dart';
-import 'package:dropdown_plus/dropdown_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
+import 'package:searchfield/searchfield.dart';
 
 class EditPlan extends StatefulWidget {
   final DisbursementPlan plan;
@@ -17,18 +16,16 @@ class EditPlan extends StatefulWidget {
 class _EditPlanState extends State<EditPlan> {
   late DisbursementPlan plan;
   TextEditingController titleController = TextEditingController();
-  DropdownEditingController<String>? categoryTitleController =
-      DropdownEditingController<String>();
-  DropdownEditingController<String>? selectedCategoryTitleController =
-      DropdownEditingController<String>();
-  TextEditingController categoryPercentageController = TextEditingController();
+
+  final selectedCategoryTitleController = TextEditingController();
+
   TextEditingController selectedCategoryPercentageController =
       TextEditingController();
-  List<String> nonSelectedCategories = incomeAndExpenseCategories;
+  List<String> nonSelectedCategories = budgetPlanCategories;
   List<PlanCategory> categories = [];
   PlanCategory? selectedCategory;
   double totalPercentage = 0;
-  List<Color> colorList = _generateColorList(64);
+  List<Color> colorList = _generateColorList(24);
 
   static List<Color> _generateColorList(int count) {
     Random random = Random();
@@ -62,12 +59,10 @@ class _EditPlanState extends State<EditPlan> {
       return;
     }
 
-    print(categoryTitleController?.value.toString());
     double remainingPercentage = 100 - totalPercentage;
     double enteredPercentage =
-        double.tryParse(categoryPercentageController.text) ?? 0;
-    if (categoryTitleController!.value.toString().isEmpty ||
-        categoryTitleController!.value == null) {
+        double.tryParse(selectedCategoryPercentageController.text) ?? 0;
+    if (selectedCategoryTitleController.text.isEmpty) {
       _showToast(
         'Category title cannot be empty',
         Colors.white,
@@ -75,9 +70,17 @@ class _EditPlanState extends State<EditPlan> {
       return;
     }
 
-    if (categoryPercentageController.text.isEmpty) {
+    if (selectedCategoryPercentageController.text.isEmpty) {
       _showToast(
         'Category percentage cannot be empty',
+        Colors.white,
+      );
+      return;
+    }
+
+    if (enteredPercentage == 0) {
+      _showToast(
+        'Category percentage cannot be zero',
         Colors.white,
       );
       return;
@@ -94,51 +97,85 @@ class _EditPlanState extends State<EditPlan> {
     setState(() {
       categories.add(
         PlanCategory(
-          title: categoryTitleController!.value.toString(),
-          percentage: enteredPercentage,
-          color: currentColor,
+          title: selectedCategoryTitleController.text,
+          percentage: double.parse(selectedCategoryPercentageController.text),
+          color: selectedCategory!.color,
         ),
       );
+
       totalPercentage += enteredPercentage;
-      // categoryTitleController?.dispose();
 
       nonSelectedCategories = nonSelectedCategories
-          .where(
-              (element) => element != categoryTitleController!.value.toString())
+          .where((element) =>
+              element != selectedCategoryTitleController.value.toString())
           .toList();
-      categoryTitleController = DropdownEditingController<String>();
 
-      categoryPercentageController.clear();
       currentColor = _generateRandomColor();
+      selectedCategory =
+          PlanCategory(title: "", percentage: 0, color: currentColor);
+
+      selectedCategoryTitleController.text = selectedCategory!.title;
+      selectedCategoryPercentageController.text =
+          selectedCategory!.percentage.toString();
     });
   }
 
-  void _removeCategory(int index) {
-    setState(() {
-      totalPercentage -= categories[index].percentage;
+  void _removeCategory() {
+    // setState(() {
+    //   totalPercentage -= categories[index].percentage;
 
-      nonSelectedCategories = [
-        categories[index].title,
-        ...nonSelectedCategories
-      ];
-      categories.removeAt(index);
+    //   nonSelectedCategories = [
+    //     categories[index].title,
+    //     ...nonSelectedCategories
+    //   ];
+    //   categories.removeAt(index);
+    // });
+    if (selectedCategory == null) {
+      return;
+    }
+    setState(() {
+      currentColor = _generateRandomColor();
+      selectedCategory =
+          PlanCategory(title: "", percentage: 0, color: currentColor);
+
+      selectedCategoryTitleController.text = selectedCategory!.title;
+      selectedCategoryPercentageController.text =
+          selectedCategory!.percentage.toString();
     });
   }
 
   void _selectCategory(int index) {
     setState(() {
+      if (selectedCategory != null &&
+          selectedCategory!.title.isNotEmpty &&
+          selectedCategory!.color.toString().isNotEmpty &&
+          selectedCategory!.percentage.toString().isNotEmpty) {
+        PlanCategory planToAdd = PlanCategory(
+          title: selectedCategory!.title,
+          percentage: selectedCategory!.percentage,
+          color: selectedCategory!.color,
+        );
+
+        // Update the categories list by assigning the result of add to it
+        // categories = List.from(categories)..add(planToAdd);
+        if (categories.isEmpty) {
+          categories = [planToAdd];
+        } else {
+          categories = List.from(categories)..add(planToAdd);
+        }
+      }
       totalPercentage -= categories[index].percentage;
 
       selectedCategory = categories[index];
-
-      selectedCategoryTitleController!.value = categories[index].title;
-      selectedCategoryPercentageController.text =
-          categories[index].percentage.toString();
-
       nonSelectedCategories = [
         categories[index].title,
         ...nonSelectedCategories
       ];
+
+      selectedCategoryTitleController.text = categories[index].title;
+      selectedCategoryPercentageController.text =
+          categories[index].percentage.toString();
+
       categories.removeAt(index);
     });
   }
@@ -249,14 +286,13 @@ class _EditPlanState extends State<EditPlan> {
     return totalPercentage;
   }
 
+  final suggestions = List.generate(10, (index) => 'suggestion $index');
   @override
   void initState() {
     super.initState();
-    print(widget.plan);
     titleController.text = widget.plan.title;
     categories = widget.plan.categories;
     totalPercentage = calculateTotalPercentage(categories);
-    print(totalPercentage);
   }
 
   @override
@@ -342,72 +378,165 @@ class _EditPlanState extends State<EditPlan> {
                     for (int i = 0; i < categories.length; i++)
                       _buildCategoryRow(i),
                     const SizedBox(height: 10),
-                    if (totalPercentage < 100 || selectedCategory?.title != '')
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextDropdownFormField(
-                              options: nonSelectedCategories,
-                              controller: categoryTitleController,
-                              decoration: const InputDecoration(
-                                  // border: OutlineInputBorder(),
-                                  suffixIcon: Icon(Icons.arrow_drop_down),
-                                  labelText: "Title"),
-                              dropdownHeight: 300,
+                    if (totalPercentage < 100 ||
+                        selectedCategoryTitleController.text != '')
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              // mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: SearchField(
+                                    controller: selectedCategoryTitleController,
+                                    key: const Key('searchfield'),
+                                    hint: 'Search Budget Category Title',
+                                    itemHeight: 50,
+                                    scrollbarDecoration: ScrollbarDecoration(),
+                                    onTapOutside: (x) {},
+                                    searchInputDecoration:
+                                        const InputDecoration(
+                                      labelText: 'Category Title',
+                                      suffixIcon: Icon(Icons.arrow_drop_down),
+                                    ),
+                                    emptyWidget: Container(
+                                        padding: const EdgeInsets.only(
+                                            top: 20,
+                                            bottom: 20,
+                                            left: 10,
+                                            right: 10),
+                                        child: const Text(
+                                          "Budget Category not found",
+                                          style: TextStyle(color: Colors.grey),
+                                        )),
+                                    suggestionsDecoration: SuggestionDecoration(
+                                      color: Colors.grey[100],
+                                    ),
+                                    suggestions: nonSelectedCategories
+                                        .map((e) => SearchFieldListItem<String>(
+                                            e,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 4.0,
+                                                      horizontal: 12),
+                                              child: Text(e,
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Theme.of(context)
+                                                          .primaryColor)),
+                                            )))
+                                        .toList(),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                SizedBox(
+                                  width: 60,
+                                  child: TextField(
+                                    controller:
+                                        selectedCategoryPercentageController,
+                                    maxLength: 3,
+                                    buildCounter: (context,
+                                        {required currentLength,
+                                        required isFocused,
+                                        maxLength}) {
+                                      return null;
+                                    },
+                                    onChanged: (value) {
+                                      // Handle category percentage change if needed
+                                    },
+                                    keyboardType:
+                                        const TextInputType.numberWithOptions(
+                                            decimal: true),
+                                    decoration: const InputDecoration(
+                                      labelText: 'Percent',
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                GestureDetector(
+                                  onTap: () => _pickColor(categories.length),
+                                  child: Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      color: selectedCategory!.color,
+                                      // categories.isEmpty ? Colors.grey : categories.last.color,
+                                      borderRadius: BorderRadius.circular(50),
+                                    ),
+                                  ),
+                                ),
+                                // IconButton(
+                                //   icon: const Icon(Icons.add),
+                                //   onPressed: _addCategory,
+                                // ),
+                                // IconButton(
+                                //   icon: const Icon(Icons.remove),
+                                //   onPressed: _removeCategory,
+                                // ),
+                              ],
                             ),
-                          ),
-                          // Expanded(
-                          //   child: TextField(
-                          //     controller: categoryTitleController,
-                          //     onChanged: (value) {
-                          //       // Handle category title change if needed
-                          //     },
-                          //     decoration: InputDecoration(
-                          //       labelText: 'Title',
-                          //     ),
-                          //   ),
-                          // ),
-                          const SizedBox(width: 10),
-                          SizedBox(
-                            width: 70,
-                            child: TextField(
-                              controller: categoryPercentageController,
-                              maxLength: 3,
-                              buildCounter: (context,
-                                  {required currentLength,
-                                  required isFocused,
-                                  maxLength}) {
-                                return null;
-                              },
-                              onChanged: (value) {
-                                // Handle category percentage change if needed
-                              },
-                              keyboardType:
-                                  const TextInputType.numberWithOptions(
-                                      decimal: true),
-                              decoration: const InputDecoration(
-                                labelText: 'Percent',
-                              ),
+                            SizedBox(
+                              height: 20,
                             ),
-                          ),
-                          const SizedBox(width: 10),
-                          GestureDetector(
-                            onTap: () => _pickColor(categories.length),
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: currentColor,
-                                // categories.isEmpty ? Colors.grey : categories.last.color,
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.add),
-                            onPressed: _addCategory,
-                          ),
-                        ],
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: OutlinedButton.icon(
+                                    style: OutlinedButton.styleFrom(
+                                      side: BorderSide(
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                      padding: const EdgeInsets.only(
+                                          top: 15, bottom: 15),
+                                    ),
+                                    onPressed: () {
+                                      _addCategory();
+                                    },
+                                    icon: Icon(
+                                      Icons.add,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                    label: Text(
+                                      'Add Category',
+                                      style: TextStyle(
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 20),
+                                Expanded(
+                                  child: OutlinedButton.icon(
+                                    style: ButtonStyle(
+                                      // backgroundColor: MaterialStateProperty.all(
+                                      //     Theme.of(context).primaryColor),
+
+                                      padding: MaterialStateProperty.all(
+                                        const EdgeInsets.only(
+                                            top: 15, bottom: 15),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      _addCategory();
+                                    },
+                                    icon: Icon(
+                                      Icons.remove,
+                                      color: Colors.grey,
+                                    ),
+                                    label: Text(
+                                      'Remove Category',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     const SizedBox(height: 40),
                     SizedBox(
@@ -427,8 +556,7 @@ class _EditPlanState extends State<EditPlan> {
                               categories: categories,
                             );
                             // Add your logic to save the plan
-                            print(plan.title);
-                            print(plan.categories);
+
                             _showToast("Plan Saved", Colors.white);
                             Navigator.of(context).pop(plan);
                           }
@@ -471,7 +599,7 @@ class _EditPlanState extends State<EditPlan> {
             Icons.edit,
             color: Colors.grey,
           ),
-          onPressed: () => _removeCategory(index),
+          onPressed: () => _selectCategory(index),
         ),
       ],
     );
@@ -489,7 +617,7 @@ class _EditPlanState extends State<EditPlan> {
     if (totalPercentage != 100) {
       _showToast(
         'Total percentage must be 100',
-        Theme.of(context).primaryColor,
+        Colors.white,
       );
       return false;
     }
