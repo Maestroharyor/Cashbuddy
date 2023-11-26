@@ -17,7 +17,6 @@ dependencies:
   intl: ^0.18.1
   mat_month_picker_dialog: ^1.1.1
   fl_chart: ^0.64.0
-  dropdown_plus: ^0.0.9 #To be removed
   flutter_colorpicker: ^1.0.3
   toastification: ^1.1.0
   flutter_riverpod: ^2.4.5

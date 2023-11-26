@@ -478,7 +478,7 @@ class _EditPlanState extends State<EditPlan> {
                                 // ),
                               ],
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 20,
                             ),
                             Row(
@@ -508,7 +508,7 @@ class _EditPlanState extends State<EditPlan> {
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 20),
+                                const SizedBox(width: 20),
                                 Expanded(
                                   child: OutlinedButton.icon(
                                     style: ButtonStyle(
@@ -523,11 +523,11 @@ class _EditPlanState extends State<EditPlan> {
                                     onPressed: () {
                                       _addCategory();
                                     },
-                                    icon: Icon(
+                                    icon: const Icon(
                                       Icons.remove,
                                       color: Colors.grey,
                                     ),
-                                    label: Text(
+                                    label: const Text(
                                       'Remove Category',
                                       style: TextStyle(color: Colors.grey),
                                     ),

@@ -231,3 +231,5 @@ List<String> budgetPlanCategories = [
 
 // App Info
 String appName = "CashBuddy";
+
+List<String> currencies = ["NGN", "USD", "EUR", "GPB", "JPY"];

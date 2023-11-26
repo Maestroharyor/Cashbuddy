@@ -1,8 +1,8 @@
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/material.dart';
-import 'package:dropdown_plus/dropdown_plus.dart';
 import 'package:cashbuddy/data/index.dart';
 import 'package:intl/intl.dart';
+import 'package:searchfield/searchfield.dart';
 
 class AddNewIncomeContainer extends StatefulWidget {
   const AddNewIncomeContainer({super.key});
@@ -107,13 +107,38 @@ class _AddNewIncomeContainerState extends State<AddNewIncomeContainer> {
                 const SizedBox(
                   height: 30,
                 ),
-                TextDropdownFormField(
-                  options: incomeCategories,
-                  decoration: const InputDecoration(
+                SearchField(
+                  // controller: selectedCategoryTitleController,
+                  key: const Key('searchfield'),
+                  hint: 'Search Income Category ',
+                  itemHeight: 50,
+                  scrollbarDecoration: ScrollbarDecoration(),
+                  onTapOutside: (x) {},
+                  searchInputDecoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       suffixIcon: Icon(Icons.arrow_drop_down),
                       labelText: "Income Category"),
-                  dropdownHeight: 250,
+                  emptyWidget: Container(
+                      padding: const EdgeInsets.only(
+                          top: 20, bottom: 20, left: 10, right: 10),
+                      child: const Text(
+                        "Income Category not found",
+                        style: TextStyle(color: Colors.grey),
+                      )),
+                  suggestionsDecoration: SuggestionDecoration(
+                    color: Colors.grey[100],
+                  ),
+                  suggestions: incomeCategories
+                      .map((e) => SearchFieldListItem<String>(e,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 4.0, horizontal: 12),
+                            child: Text(e,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Theme.of(context).primaryColor)),
+                          )))
+                      .toList(),
                 ),
                 const SizedBox(
                   height: 30,

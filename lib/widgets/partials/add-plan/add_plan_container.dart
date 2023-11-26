@@ -1,6 +1,6 @@
-import 'package:dropdown_plus/dropdown_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:cashbuddy/data/index.dart';
+import 'package:searchfield/searchfield.dart';
 import 'dart:math';
 import 'package:toastification/toastification.dart';
 import 'package:cashbuddy/models/all_models.dart';
@@ -14,8 +14,7 @@ class AddPlanContainer extends StatefulWidget {
 
 class _AddPlanContainerState extends State<AddPlanContainer> {
   TextEditingController titleController = TextEditingController();
-  DropdownEditingController<String>? categoryTitleController =
-      DropdownEditingController<String>();
+  TextEditingController categoryTitleController = TextEditingController();
   TextEditingController categoryPercentageController = TextEditingController();
   List<String> nonSelectedCategories = budgetPlanCategories;
   List<PlanCategory> categories = [];
@@ -98,8 +97,7 @@ class _AddPlanContainerState extends State<AddPlanContainer> {
           .where(
               (element) => element != categoryTitleController!.value.toString())
           .toList();
-      categoryTitleController = DropdownEditingController<String>();
-
+      categoryTitleController.clear();
       categoryPercentageController.clear();
       currentColor = _generateRandomColor();
     });
@@ -295,15 +293,50 @@ class _AddPlanContainerState extends State<AddPlanContainer> {
                     Row(
                       children: [
                         Expanded(
-                          child: TextDropdownFormField(
-                            options: nonSelectedCategories,
+                          child: SearchField(
                             controller: categoryTitleController,
-                            decoration: const InputDecoration(
-                                // border: OutlineInputBorder(),
+                            key: const Key('searchfield'),
+                            hint: 'Search Budget Category Title',
+                            itemHeight: 50,
+                            scrollbarDecoration: ScrollbarDecoration(),
+                            onTapOutside: (x) {},
+                            searchInputDecoration: const InputDecoration(
+                                border: OutlineInputBorder(),
                                 suffixIcon: Icon(Icons.arrow_drop_down),
                                 labelText: "Title"),
-                            dropdownHeight: 300,
+                            emptyWidget: Container(
+                                padding: const EdgeInsets.only(
+                                    top: 20, bottom: 20, left: 10, right: 10),
+                                child: const Text(
+                                  "Budget Category not found",
+                                  style: TextStyle(color: Colors.grey),
+                                )),
+                            suggestionsDecoration: SuggestionDecoration(
+                              color: Colors.grey[100],
+                            ),
+                            suggestions: nonSelectedCategories
+                                .map((e) => SearchFieldListItem<String>(e,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 4.0, horizontal: 12),
+                                      child: Text(e,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Theme.of(context)
+                                                  .primaryColor)),
+                                    )))
+                                .toList(),
                           ),
+
+                          // child: TextDropdownFormField(
+                          //   options: nonSelectedCategories,
+                          //   controller: categoryTitleController,
+                          //   decoration: const InputDecoration(
+                          //       // border: OutlineInputBorder(),
+                          //       suffixIcon: Icon(Icons.arrow_drop_down),
+                          //       labelText: "Title"),
+                          //   dropdownHeight: 300,
+                          // ),
                         ),
                         // Expanded(
                         //   child: TextField(

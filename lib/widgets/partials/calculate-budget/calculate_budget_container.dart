@@ -1,7 +1,7 @@
 import 'package:cashbuddy/widgets/partials/calculate-budget/budget_result.dart';
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
-import 'package:dropdown_plus/dropdown_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:searchfield/searchfield.dart';
 
 class CalculateBudgetContainer extends StatefulWidget {
   const CalculateBudgetContainer({super.key});
@@ -95,9 +95,15 @@ class _CalculateBudgetContainerState extends State<CalculateBudgetContainer> {
                   const SizedBox(
                     height: 20,
                   ),
-                  TextDropdownFormField(
-                    options: const [],
-                    decoration: const InputDecoration(
+                  SearchField(
+                    // controller: selectedCategoryTitleController,
+                    key: const Key('searchfield'),
+                    // hint: 'Search Budget Plan',
+                    itemHeight: 50,
+                    scrollbarDecoration: ScrollbarDecoration(),
+                    onTapOutside: (x) {},
+
+                    searchInputDecoration: const InputDecoration(
                       focusColor: Colors.white,
                       border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.white)),
@@ -115,7 +121,20 @@ class _CalculateBudgetContainerState extends State<CalculateBudgetContainer> {
                         color: Colors.white,
                       ),
                     ),
-                    dropdownHeight: 250,
+                    suggestionsDecoration: SuggestionDecoration(
+                      color: Colors.grey[100],
+                    ),
+                    suggestions: []
+                        .map((e) => SearchFieldListItem<String>(e,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 4.0, horizontal: 12),
+                              child: Text(e,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Theme.of(context).primaryColor)),
+                            )))
+                        .toList(),
                   ),
                   const SizedBox(
                     height: 30,

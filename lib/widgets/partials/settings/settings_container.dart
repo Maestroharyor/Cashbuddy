@@ -1,6 +1,7 @@
+import 'package:cashbuddy/data/index.dart';
 import 'package:cashbuddy/widgets/elements/cb_text.dart';
-import 'package:dropdown_plus/dropdown_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:searchfield/searchfield.dart';
 
 class SettingsContainer extends StatelessWidget {
   const SettingsContainer({super.key});
@@ -410,20 +411,38 @@ class AccountSettingsSection extends StatelessWidget {
           color: Colors.white, borderRadius: BorderRadius.circular(20)),
       child: Column(
         children: [
-          TextDropdownFormField(
-            options: const ["NGN", "USD", "EUR", "GPB", "JPY"],
-            // controller: categoryTitleController,
-            decoration: InputDecoration(
-                // border: OutlineInputBorder(),
-                suffixIcon: const Icon(Icons.arrow_drop_down),
-                label: Text(
-                  "Preferred Currency",
-                  style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14,
-                      color: Colors.grey[900]),
+          SearchField(
+            // controller: selectedCategoryTitleController,
+            key: const Key('searchfield'),
+            hint: 'Search Currencies',
+            itemHeight: 50,
+            scrollbarDecoration: ScrollbarDecoration(),
+            onTapOutside: (x) {},
+            searchInputDecoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                suffixIcon: Icon(Icons.arrow_drop_down),
+                labelText: "Preffered Currency"),
+            emptyWidget: Container(
+                padding: const EdgeInsets.only(
+                    top: 20, bottom: 20, left: 10, right: 10),
+                child: const Text(
+                  "Currency not found",
+                  style: TextStyle(color: Colors.grey),
                 )),
-            dropdownHeight: 200,
+            suggestionsDecoration: SuggestionDecoration(
+              color: Colors.grey[100],
+            ),
+            suggestions: currencies
+                .map((e) => SearchFieldListItem<String>(e,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4.0, horizontal: 12),
+                      child: Text(e,
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Theme.of(context).primaryColor)),
+                    )))
+                .toList(),
           ),
           Container(
             padding: const EdgeInsets.only(bottom: 5, top: 5),
