@@ -1,18 +1,22 @@
+import 'package:cashbuddy/providers/user_provider/provider.dart';
+import 'package:cashbuddy/providers/user_provider/user.dart';
 import 'package:cashbuddy/widgets/partials/home/home_actions.dart';
 import 'package:flutter/material.dart';
 import 'package:cashbuddy/screens/sub/notifications.dart';
 import 'package:cashbuddy/screens/sub/reports.dart';
 import 'package:cashbuddy/utils/app_functions.dart';
 import 'package:cashbuddy/widgets/partials/home/home_timeline.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeScreenContainer extends StatefulWidget {
+class HomeScreenContainer extends ConsumerStatefulWidget {
   const HomeScreenContainer({super.key});
 
   @override
-  State<HomeScreenContainer> createState() => _HomeScreenContainerState();
+  ConsumerState<HomeScreenContainer> createState() =>
+      _HomeScreenContainerState();
 }
 
-class _HomeScreenContainerState extends State<HomeScreenContainer> {
+class _HomeScreenContainerState extends ConsumerState<HomeScreenContainer> {
   int selectedMonth = 0;
 
   final months = [
@@ -38,6 +42,7 @@ class _HomeScreenContainerState extends State<HomeScreenContainer> {
 
   @override
   Widget build(BuildContext context) {
+    final AsyncValue<User> user = ref.watch(authUserProvider);
     return Container(
       color: Colors.white,
       child: Column(
@@ -57,7 +62,7 @@ class _HomeScreenContainerState extends State<HomeScreenContainer> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Hello Maestro',
+                      Text('Hello ' + user.value!.firstName ?? "there",
                           style:
                               TextStyle(color: Colors.blue[100], fontSize: 16)),
                       const SizedBox(height: 5),

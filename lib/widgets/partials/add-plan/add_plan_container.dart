@@ -53,12 +53,11 @@ class _AddPlanContainerState extends State<AddPlanContainer> {
       return;
     }
 
-    print(categoryTitleController?.value.toString());
+    print(categoryTitleController.value.toString());
     double remainingPercentage = 100 - totalPercentage;
     double enteredPercentage =
         double.tryParse(categoryPercentageController.text) ?? 0;
-    if (categoryTitleController!.value.toString().isEmpty ||
-        categoryTitleController!.value == null) {
+    if (categoryTitleController.value.toString().isEmpty) {
       _showToast(
         'Category title cannot be empty',
         Colors.white,
@@ -85,7 +84,7 @@ class _AddPlanContainerState extends State<AddPlanContainer> {
     setState(() {
       categories.add(
         PlanCategory(
-          title: categoryTitleController!.value.toString(),
+          title: categoryTitleController.value.toString(),
           percentage: enteredPercentage,
           color: currentColor,
         ),
@@ -95,7 +94,7 @@ class _AddPlanContainerState extends State<AddPlanContainer> {
 
       nonSelectedCategories = nonSelectedCategories
           .where(
-              (element) => element != categoryTitleController!.value.toString())
+              (element) => element != categoryTitleController.value.toString())
           .toList();
       categoryTitleController.clear();
       categoryPercentageController.clear();

@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:cashbuddy/models/all_models.dart';
+import 'package:cashbuddy/providers/user_provider/provider.dart';
 import 'package:cashbuddy/screens/main/splash.dart';
 import 'package:cashbuddy/screens/sub/add_new_expense.dart';
 import 'package:cashbuddy/screens/sub/add_new_income.dart';
@@ -22,16 +25,18 @@ import 'package:cashbuddy/screens/main/Transactions.dart';
 import 'package:cashbuddy/screens/main/add_new.dart';
 import "package:cashbuddy/routes/index.dart";
 
-class MainApp extends StatefulWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class MainApp extends ConsumerStatefulWidget {
   const MainApp({super.key});
 
   @override
-  State<MainApp> createState() => _MainAppState();
+  ConsumerState<MainApp> createState() => _MainAppState();
 }
 
-class _MainAppState extends State<MainApp> {
+class _MainAppState extends ConsumerState<MainApp> {
   late SharedPreferences _prefs;
-  bool _showOnboarding = true;
+  bool _isOnboardingViewed = true;
 
   @override
   void initState() {
@@ -42,14 +47,46 @@ class _MainAppState extends State<MainApp> {
   _loadPreferences() async {
     _prefs = await SharedPreferences.getInstance();
     setState(() {
-      _showOnboarding = _prefs.getBool('showOnboarding') ?? true;
+      _isOnboardingViewed = _prefs.getBool('showOnboarding') ?? false;
+      print(_isOnboardingViewed);
+      print(_prefs.getBool('showOnboarding'));
       // _isLoggedIn = _prefs.getBool('isLoggedIn') ?? false;
     });
+
+    final String? userJson = _prefs.getString('user');
+
+    if (userJson != null) {
+      print("User has logged in");
+
+      CashbuddyUser user = CashbuddyUser(
+        id: jsonDecode(userJson)['id'],
+        firstName: jsonDecode(userJson)['firstName'],
+        lastName: jsonDecode(userJson)['lastName'],
+        username: jsonDecode(userJson)['username'],
+        email: jsonDecode(userJson)['email'],
+        password: jsonDecode(userJson)['password'],
+        phoneNumber: jsonDecode(userJson)['phoneNumber'],
+        country: jsonDecode(userJson)['country'],
+        userRole: jsonDecode(userJson)['userRole'],
+        createdAt: DateTime.parse(jsonDecode(userJson)['createdAt']),
+        updatedAt: DateTime.parse(jsonDecode(userJson)['updatedAt']),
+        token: jsonDecode(userJson)['token'],
+      );
+
+      ref.read(authUserProvider.notifier).setUser(user);
+
+      // Use the user data as needed
+    } else {
+      // Handle the case where user data is not available
+      print("User hasn't logged in");
+    }
   }
 
   _setOnboardingViewed() {
     setState(() {
-      _showOnboarding = false;
+      _isOnboardingViewed = false;
+      _prefs.setBool('showOnboarding', false);
+      print("Onboarding viewed");
     });
   }
 
@@ -59,10 +96,13 @@ class _MainAppState extends State<MainApp> {
       debugShowCheckedModeBanner: false,
       title: appName,
       initialRoute: splashRoute,
-      // initialRoute: _showOnboarding ? onboardingRoute : authenticatedRoute,
+      // initialRoute:
+      //     _isOnboardingViewed == false ? onboardingRoute : authenticatedRoute,
+      // initialRoute: '/test',
       theme: appTheme,
       routes: {
-        splashRoute: (context) => SplashScreen(showOnboarding: _showOnboarding),
+        splashRoute: (context) =>
+            SplashScreen(showOnboarding: _isOnboardingViewed),
         onboardingRoute: (context) =>
             OnboardingScreen(setOnboardingViewed: _setOnboardingViewed),
         loginRoute: (context) => const LoginScreen(),
@@ -79,7 +119,8 @@ class _MainAppState extends State<MainApp> {
         notificationsRoute: (context) => const NotificationsScreen(),
         reportsRoute: (context) => const ReportsScreen(),
         addPlanRoute: (context) => const AddPlan(),
-        calculateBudgetRoute: (context) => const CalculateBudget()
+        calculateBudgetRoute: (context) => const CalculateBudget(),
+        // '/test': (context) => const Test(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == editPlanRoute) {

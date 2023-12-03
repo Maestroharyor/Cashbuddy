@@ -102,7 +102,7 @@ class _CalculateBudgetContainerState extends State<CalculateBudgetContainer> {
                     itemHeight: 50,
                     scrollbarDecoration: ScrollbarDecoration(),
                     onTapOutside: (x) {},
-
+                    searchStyle: const TextStyle(color: Colors.white),
                     searchInputDecoration: const InputDecoration(
                       focusColor: Colors.white,
                       border: OutlineInputBorder(

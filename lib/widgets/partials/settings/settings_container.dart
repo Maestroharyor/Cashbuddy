@@ -1,13 +1,23 @@
+import 'dart:ffi';
+
 import 'package:cashbuddy/data/index.dart';
+import 'package:cashbuddy/models/all_models.dart';
+import 'package:cashbuddy/providers/auth_provider/provider.dart';
+import 'package:cashbuddy/providers/user_provider/provider.dart';
+import 'package:cashbuddy/providers/user_provider/user.dart';
+import 'package:cashbuddy/routes/index.dart';
 import 'package:cashbuddy/widgets/elements/cb_text.dart';
 import 'package:flutter/material.dart';
 import 'package:searchfield/searchfield.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class SettingsContainer extends StatelessWidget {
+class SettingsContainer extends ConsumerWidget {
   const SettingsContainer({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AsyncValue<User> user = ref.watch(authUserProvider);
     return Container(
       color: Colors.grey[100],
       child: Column(children: [
@@ -58,7 +68,7 @@ class SettingsContainer extends StatelessWidget {
                     const SizedBox(
                       height: 10,
                     ),
-                    const Text('Hi, Maestro',
+                    Text('Hi,' + user.value!.firstName,
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,
@@ -88,6 +98,10 @@ class SettingsContainer extends StatelessWidget {
                   height: 20,
                 ),
                 AccountSettingsSection(),
+                SizedBox(
+                  height: 20,
+                ),
+                OtherSettingsSection()
               ],
             ),
           ),
@@ -97,13 +111,14 @@ class SettingsContainer extends StatelessWidget {
   }
 }
 
-class ProfileInformationSection extends StatelessWidget {
+class ProfileInformationSection extends ConsumerWidget {
   const ProfileInformationSection({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AsyncValue<User> user = ref.watch(authUserProvider);
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -111,7 +126,7 @@ class ProfileInformationSection extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.only(bottom: 15, top: 15),
+            padding: const EdgeInsets.only(bottom: 8, top: 8),
             decoration: BoxDecoration(
                 border: Border(
               bottom: BorderSide(
@@ -119,31 +134,36 @@ class ProfileInformationSection extends StatelessWidget {
                 width: 1.0, // specify the border width
               ),
             )),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Nickname",
+                const Text(
+                  "Username",
                   style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
                 ),
                 Row(
                   children: [
                     CBText(
-                      text: "Maestrojosh",
-                      maxCharacters: 18,
+                      text: user.value!.username,
+                      maxCharacters: 15,
                       style: TextStyle(fontSize: 14),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 15,
                     ),
-                    Icon(Icons.edit, color: Colors.grey)
+                    // Icon(Icons.edit, color: Colors.grey)
+                    IconButton(
+                        onPressed: () {
+                          _showEditUserameModalDialog(context);
+                        },
+                        icon: const Icon(Icons.edit))
                   ],
                 )
               ],
             ),
           ),
           Container(
-            padding: const EdgeInsets.only(bottom: 15, top: 30),
+            padding: const EdgeInsets.only(bottom: 8, top: 8),
             decoration: BoxDecoration(
                 border: Border(
               bottom: BorderSide(
@@ -151,31 +171,35 @@ class ProfileInformationSection extends StatelessWidget {
                 width: 1.0, // specify the border width
               ),
             )),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   "Full Name",
                   style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
                 ),
                 Row(
                   children: [
                     CBText(
-                      text: "Maestro Joshua",
-                      maxCharacters: 18,
+                      text: user.value!.firstName + " " + user.value!.lastName,
+                      maxCharacters: 15,
                       style: TextStyle(fontSize: 14),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 15,
                     ),
-                    Icon(Icons.edit, color: Colors.grey)
+                    IconButton(
+                        onPressed: () {
+                          _showEditFullnameModalDialog(context);
+                        },
+                        icon: const Icon(Icons.edit))
                   ],
                 )
               ],
             ),
           ),
           Container(
-            padding: const EdgeInsets.only(bottom: 15, top: 30),
+            padding: const EdgeInsets.only(bottom: 8, top: 8),
             decoration: BoxDecoration(
                 border: Border(
               bottom: BorderSide(
@@ -183,216 +207,63 @@ class ProfileInformationSection extends StatelessWidget {
                 width: 1.0, // specify the border width
               ),
             )),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   "Email Address",
                   style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
                 ),
                 Row(
                   children: [
                     CBText(
-                      text: "Maestro@thelifetechfacts.com",
-                      maxCharacters: 18,
+                      text: user.value!.email,
+                      maxCharacters: 15,
                       style: TextStyle(fontSize: 14),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 15,
                     ),
-                    Icon(Icons.edit, color: Colors.grey)
+                    IconButton(
+                        onPressed: () {
+                          _showEditEmailModalDialog(context);
+                        },
+                        icon: const Icon(Icons.edit))
                   ],
                 )
               ],
             ),
           ),
           Container(
-            padding: const EdgeInsets.only(bottom: 15, top: 30),
-            child: const Row(
+            padding: const EdgeInsets.only(bottom: 8, top: 8),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   "Phone Number",
                   style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
                 ),
                 Row(
                   children: [
                     CBText(
-                      text: "+234903272727",
-                      maxCharacters: 18,
+                      text: user.value!.phoneNumber,
+                      maxCharacters: 15,
                       style: TextStyle(fontSize: 14),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 15,
                     ),
-                    Icon(Icons.edit, color: Colors.grey)
+                    IconButton(
+                        onPressed: () {
+                          _showEditPhoneNumberModalDialog(context);
+                        },
+                        icon: const Icon(Icons.edit))
                   ],
                 )
               ],
             ),
           ),
         ],
-        // children: [
-        //   Material(
-        //     borderRadius: BorderRadius.circular(8),
-        //     clipBehavior: Clip.hardEdge,
-        //     color: Colors.grey[100],
-        //     child: InkWell(
-        //       onTap: () {
-        //         Navigator.push(
-        //             context,
-        //             MaterialPageRoute(
-        //                 builder: (context) => const AccountInfoScreen()));
-        //       },
-        //       child: Container(
-        //         padding: const EdgeInsets.all(30),
-        //         // decoration: const BoxDecoration(
-        //         //     // color: Colors.white,
-        //         //     borderRadius: BorderRadius.all(Radius.circular(8))),
-        //         child: Row(
-        //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //           children: [
-        //             Expanded(
-        //               child: Row(
-        //                 crossAxisAlignment: CrossAxisAlignment.start,
-        //                 children: [
-        //                   Icon(Icons.account_circle_rounded,
-        //                       color: Colors.grey[600]),
-        //                   const SizedBox(
-        //                     width: 15,
-        //                   ),
-        //                   Text(
-        //                     "Account Info",
-        //                     style: TextStyle(
-        //                         color: Colors.grey[600],
-        //                         fontWeight: FontWeight.bold,
-        //                         fontSize: 14),
-        //                   ),
-        //                 ],
-        //               ),
-        //             ),
-        //             const SizedBox(
-        //               width: 30,
-        //             ),
-        //             Icon(
-        //               Icons.chevron_right,
-        //               color: Theme.of(context).primaryColor,
-        //               size: 30,
-        //             )
-        //           ],
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        //   const SizedBox(
-        //     height: 25,
-        //   ),
-        //   Material(
-        //     borderRadius: BorderRadius.circular(8),
-        //     clipBehavior: Clip.hardEdge,
-        //     color: Colors.grey[100],
-        //     child: InkWell(
-        //       onTap: () {
-        //         Navigator.push(
-        //             context,
-        //             MaterialPageRoute(
-        //                 builder: (context) =>
-        //                     const SettingsMainScreen()));
-        //       },
-        //       child: Container(
-        //         padding: const EdgeInsets.all(30),
-        //         // decoration: const BoxDecoration(
-        //         //     // color: Colors.white,
-        //         //     borderRadius: BorderRadius.all(Radius.circular(8))),
-        //         child: Row(
-        //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //           children: [
-        //             Expanded(
-        //               child: Row(
-        //                 crossAxisAlignment: CrossAxisAlignment.start,
-        //                 children: [
-        //                   Icon(Icons.settings, color: Colors.grey[600]),
-        //                   const SizedBox(
-        //                     width: 15,
-        //                   ),
-        //                   Text(
-        //                     "Settings",
-        //                     style: TextStyle(
-        //                         color: Colors.grey[600],
-        //                         fontWeight: FontWeight.bold,
-        //                         fontSize: 14),
-        //                   ),
-        //                 ],
-        //               ),
-        //             ),
-        //             const SizedBox(
-        //               width: 30,
-        //             ),
-        //             Icon(
-        //               Icons.chevron_right,
-        //               color: Theme.of(context).primaryColor,
-        //               size: 30,
-        //             )
-        //           ],
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        //   const SizedBox(
-        //     height: 25,
-        //   ),
-        //   Material(
-        //     borderRadius: BorderRadius.circular(8),
-        //     clipBehavior: Clip.hardEdge,
-        //     color: Colors.grey[100],
-        //     child: InkWell(
-        //       onTap: () {
-        //         Navigator.push(
-        //             context,
-        //             MaterialPageRoute(
-        //                 builder: (context) =>
-        //                     const LoginAndSecurityScreen()));
-        //       },
-        //       child: Container(
-        //         padding: const EdgeInsets.all(30),
-        //         // decoration: const BoxDecoration(
-        //         //     // color: Colors.white,
-        //         //     borderRadius: BorderRadius.all(Radius.circular(8))),
-        //         child: Row(
-        //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //           children: [
-        //             Expanded(
-        //               child: Row(
-        //                 crossAxisAlignment: CrossAxisAlignment.start,
-        //                 children: [
-        //                   Icon(Icons.lock, color: Colors.grey[600]),
-        //                   const SizedBox(
-        //                     width: 15,
-        //                   ),
-        //                   Text(
-        //                     "Login and Security",
-        //                     style: TextStyle(
-        //                         color: Colors.grey[600],
-        //                         fontWeight: FontWeight.bold,
-        //                         fontSize: 14),
-        //                   ),
-        //                 ],
-        //               ),
-        //             ),
-        //             const SizedBox(
-        //               width: 30,
-        //             ),
-        //             Icon(
-        //               Icons.chevron_right,
-        //               color: Theme.of(context).primaryColor,
-        //               size: 30,
-        //             )
-        //           ],
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // ],
       ),
     );
   }
@@ -419,7 +290,6 @@ class AccountSettingsSection extends StatelessWidget {
             scrollbarDecoration: ScrollbarDecoration(),
             onTapOutside: (x) {},
             searchInputDecoration: const InputDecoration(
-                border: OutlineInputBorder(),
                 suffixIcon: Icon(Icons.arrow_drop_down),
                 labelText: "Preffered Currency"),
             emptyWidget: Container(
@@ -553,7 +423,10 @@ class AccountSettingsSection extends StatelessWidget {
             color: Colors.white,
             animationDuration: const Duration(milliseconds: 100),
             child: InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+                Navigator.pushReplacementNamed(context, forgotPasswordRoute);
+              },
               child: Container(
                 padding: const EdgeInsets.only(bottom: 15, top: 15),
                 // decoration: const BoxDecoration(
@@ -759,4 +632,550 @@ class AccountSettingsSection extends StatelessWidget {
       ),
     );
   }
+}
+
+class OtherSettingsSection extends ConsumerWidget {
+  const OtherSettingsSection({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AsyncValue<User> user = ref.watch(authUserProvider);
+    void _showLogoutModal() {
+      showModalBottomSheet(
+        context: context,
+        builder: (context) => Container(
+          // height: 600,
+          padding: const EdgeInsets.all(30.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                "Log Out",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 14),
+              const Text(
+                "Are you sure you want to log out?",
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () async {
+                    // Get SharedPreferences instance
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+
+                    // Clear all data
+                    await prefs.clear();
+
+                    CashbuddyUser user = CashbuddyUser(
+                        id: "",
+                        firstName: "",
+                        lastName: "",
+                        country: "",
+                        email: "",
+                        phoneNumber: "",
+                        username: "",
+                        createdAt: DateTime.now(),
+                        updatedAt: DateTime.now(),
+                        userRole: "");
+                    ref.read(authUserProvider.notifier).setUser(user);
+                    ref.read(authProvider.notifier).logoutAuthUser();
+                    Navigator.popUntil(context, (route) => route.isFirst);
+                    Navigator.pushReplacementNamed(context, loginRoute);
+                  },
+                  style: TextButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.all(16.0)),
+                  child: const Text("Logout"),
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: TextButton.styleFrom(
+                      backgroundColor: Colors.grey,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.all(16.0)),
+                  child: const Text("Cancel"),
+                ),
+              ),
+              const SizedBox(height: 24),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+          color: Colors.white, borderRadius: BorderRadius.circular(20)),
+      child: Column(
+        children: [
+          Material(
+            // borderRadius: BorderRadius.circular(8),
+            clipBehavior: Clip.hardEdge,
+            color: Colors.white,
+            animationDuration: const Duration(milliseconds: 100),
+            child: InkWell(
+              onTap: () {
+                _showLogoutModal();
+              },
+              child: Container(
+                padding: const EdgeInsets.only(bottom: 15, top: 15),
+                // decoration: const BoxDecoration(
+                //     // color: Colors.white,
+                //     borderRadius: BorderRadius.all(Radius.circular(8))),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.logout, color: Colors.grey[600]),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          Text(
+                            "Logout",
+                            style: TextStyle(
+                                color: Colors.grey[600],
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 30,
+                    ),
+                    const Icon(
+                      Icons.chevron_right,
+                      color: Colors.grey,
+                      size: 30,
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+        // children: [
+        //   Material(
+        //     borderRadius: BorderRadius.circular(8),
+        //     clipBehavior: Clip.hardEdge,
+        //     color: Colors.grey[100],
+        //     child: InkWell(
+        //       onTap: () {
+        //         Navigator.push(
+        //             context,
+        //             MaterialPageRoute(
+        //                 builder: (context) => const AccountInfoScreen()));
+        //       },
+        //       child: Container(
+        //         padding: const EdgeInsets.all(30),
+        //         // decoration: const BoxDecoration(
+        //         //     // color: Colors.white,
+        //         //     borderRadius: BorderRadius.all(Radius.circular(8))),
+        //         child: Row(
+        //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //           children: [
+        //             Expanded(
+        //               child: Row(
+        //                 crossAxisAlignment: CrossAxisAlignment.start,
+        //                 children: [
+        //                   Icon(Icons.account_circle_rounded,
+        //                       color: Colors.grey[600]),
+        //                   const SizedBox(
+        //                     width: 15,
+        //                   ),
+        //                   Text(
+        //                     "Account Info",
+        //                     style: TextStyle(
+        //                         color: Colors.grey[600],
+        //                         fontWeight: FontWeight.bold,
+        //                         fontSize: 14),
+        //                   ),
+        //                 ],
+        //               ),
+        //             ),
+        //             const SizedBox(
+        //               width: 30,
+        //             ),
+        //             Icon(
+        //               Icons.chevron_right,
+        //               color: Theme.of(context).primaryColor,
+        //               size: 30,
+        //             )
+        //           ],
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        //   const SizedBox(
+        //     height: 25,
+        //   ),
+        //   Material(
+        //     borderRadius: BorderRadius.circular(8),
+        //     clipBehavior: Clip.hardEdge,
+        //     color: Colors.grey[100],
+        //     child: InkWell(
+        //       onTap: () {
+        //         Navigator.push(
+        //             context,
+        //             MaterialPageRoute(
+        //                 builder: (context) =>
+        //                     const SettingsMainScreen()));
+        //       },
+        //       child: Container(
+        //         padding: const EdgeInsets.all(30),
+        //         // decoration: const BoxDecoration(
+        //         //     // color: Colors.white,
+        //         //     borderRadius: BorderRadius.all(Radius.circular(8))),
+        //         child: Row(
+        //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //           children: [
+        //             Expanded(
+        //               child: Row(
+        //                 crossAxisAlignment: CrossAxisAlignment.start,
+        //                 children: [
+        //                   Icon(Icons.settings, color: Colors.grey[600]),
+        //                   const SizedBox(
+        //                     width: 15,
+        //                   ),
+        //                   Text(
+        //                     "Settings",
+        //                     style: TextStyle(
+        //                         color: Colors.grey[600],
+        //                         fontWeight: FontWeight.bold,
+        //                         fontSize: 14),
+        //                   ),
+        //                 ],
+        //               ),
+        //             ),
+        //             const SizedBox(
+        //               width: 30,
+        //             ),
+        //             Icon(
+        //               Icons.chevron_right,
+        //               color: Theme.of(context).primaryColor,
+        //               size: 30,
+        //             )
+        //           ],
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        //   const SizedBox(
+        //     height: 25,
+        //   ),
+        //   Material(
+        //     borderRadius: BorderRadius.circular(8),
+        //     clipBehavior: Clip.hardEdge,
+        //     color: Colors.grey[100],
+        //     child: InkWell(
+        //       onTap: () {
+        //         Navigator.push(
+        //             context,
+        //             MaterialPageRoute(
+        //                 builder: (context) =>
+        //                     const LoginAndSecurityScreen()));
+        //       },
+        //       child: Container(
+        //         padding: const EdgeInsets.all(30),
+        //         // decoration: const BoxDecoration(
+        //         //     // color: Colors.white,
+        //         //     borderRadius: BorderRadius.all(Radius.circular(8))),
+        //         child: Row(
+        //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //           children: [
+        //             Expanded(
+        //               child: Row(
+        //                 crossAxisAlignment: CrossAxisAlignment.start,
+        //                 children: [
+        //                   Icon(Icons.lock, color: Colors.grey[600]),
+        //                   const SizedBox(
+        //                     width: 15,
+        //                   ),
+        //                   Text(
+        //                     "Login and Security",
+        //                     style: TextStyle(
+        //                         color: Colors.grey[600],
+        //                         fontWeight: FontWeight.bold,
+        //                         fontSize: 14),
+        //                   ),
+        //                 ],
+        //               ),
+        //             ),
+        //             const SizedBox(
+        //               width: 30,
+        //             ),
+        //             Icon(
+        //               Icons.chevron_right,
+        //               color: Theme.of(context).primaryColor,
+        //               size: 30,
+        //             )
+        //           ],
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // ],
+      ),
+    );
+  }
+}
+
+_showEditUserameModalDialog(context) {
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          child: SizedBox(
+            // constraints: const BoxConstraints(maxHeight: 350),
+            height: 235,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 30.0, left: 20, right: 20, bottom: 30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Edit Nickname",
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                        focusColor: Theme.of(context).primaryColor,
+                        border: const OutlineInputBorder(),
+                        label: const Text("Nickname")),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: TextButton(
+                      onPressed: () {},
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                            Theme.of(context).primaryColor,
+                          ),
+                          padding: MaterialStateProperty.all(
+                            const EdgeInsets.all(20),
+                          )),
+                      child: const Text(
+                        'Update Nickname',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      });
+}
+
+_showEditFullnameModalDialog(context) {
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          child: SizedBox(
+            // constraints: const BoxConstraints(maxHeight: 350),
+            height: 315,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 30.0, left: 20, right: 20, bottom: 30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Edit Full Name",
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                        focusColor: Theme.of(context).primaryColor,
+                        border: const OutlineInputBorder(),
+                        label: const Text("First Name")),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                        focusColor: Theme.of(context).primaryColor,
+                        border: const OutlineInputBorder(),
+                        label: const Text("Last Name")),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: TextButton(
+                      onPressed: () {},
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                            Theme.of(context).primaryColor,
+                          ),
+                          padding: MaterialStateProperty.all(
+                            const EdgeInsets.all(20),
+                          )),
+                      child: const Text(
+                        'Update Full Name',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      });
+}
+
+_showEditEmailModalDialog(context) {
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          child: SizedBox(
+            // constraints: const BoxConstraints(maxHeight: 350),
+            height: 235,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 30.0, left: 20, right: 20, bottom: 30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Update Email",
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                        focusColor: Theme.of(context).primaryColor,
+                        border: const OutlineInputBorder(),
+                        label: const Text("Email Address")),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: TextButton(
+                      onPressed: () {},
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                            Theme.of(context).primaryColor,
+                          ),
+                          padding: MaterialStateProperty.all(
+                            const EdgeInsets.all(20),
+                          )),
+                      child: const Text(
+                        'Update Email Address',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      });
+}
+
+_showEditPhoneNumberModalDialog(context) {
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          child: SizedBox(
+            // constraints: const BoxConstraints(maxHeight: 350),
+            height: 235,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 30.0, left: 20, right: 20, bottom: 30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Update Phone Number",
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    decoration: InputDecoration(
+                        focusColor: Theme.of(context).primaryColor,
+                        border: const OutlineInputBorder(),
+                        label: const Text("Phone Number")),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: TextButton(
+                      onPressed: () {},
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                            Theme.of(context).primaryColor,
+                          ),
+                          padding: MaterialStateProperty.all(
+                            const EdgeInsets.all(20),
+                          )),
+                      child: const Text(
+                        'Update Phone Number',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      });
 }
