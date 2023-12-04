@@ -62,7 +62,13 @@ class _HomeScreenContainerState extends ConsumerState<HomeScreenContainer> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Hello ' + user.value!.firstName ?? "there",
+                      Text(
+                          switch (user) {
+                            AsyncData(:final value) =>
+                              'Hello ' + value.firstName,
+                            AsyncError() => 'Hello there',
+                            _ => 'Hello there',
+                          },
                           style:
                               TextStyle(color: Colors.blue[100], fontSize: 16)),
                       const SizedBox(height: 5),
@@ -137,6 +143,10 @@ class _HomeScreenContainerState extends ConsumerState<HomeScreenContainer> {
                           borderRadius: BorderRadius.circular(100),
                           child: InkResponse(
                             child: IconButton.filled(
+                              style: IconButton.styleFrom(
+                                backgroundColor:
+                                    Colors.blue[900]!.withAlpha(30),
+                              ),
                               onPressed: () {
                                 Navigator.push(
                                     context,
@@ -235,7 +245,7 @@ class _HomeScreenContainerState extends ConsumerState<HomeScreenContainer> {
           ),
           const HomeActions(),
           Transform.translate(
-            offset: const Offset(0, -30),
+            offset: const Offset(0, -60),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),

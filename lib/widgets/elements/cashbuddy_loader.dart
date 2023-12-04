@@ -23,8 +23,9 @@ class CashBuddyLoader extends StatelessWidget {
             top: 0,
             left: 0,
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height + 20,
+            height: MediaQuery.of(context).size.height + 100,
             child: Container(
+              margin: EdgeInsets.only(bottom: 150),
               color:
                   Colors.white.withOpacity(0.7), // Adjust the opacity as needed
               child: Center(

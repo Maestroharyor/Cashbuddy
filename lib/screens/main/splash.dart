@@ -48,6 +48,7 @@ class SplashScreen extends ConsumerWidget {
         } else {
           print(auth.value!.isLoggedIn);
           print("Check end");
+          Navigator.popUntil(context, (route) => route.isFirst);
           if (auth.value!.isLoggedIn) {
             Navigator.pushReplacementNamed(context, authenticatedRoute);
           } else {

@@ -43,51 +43,38 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   loginUser() async {
-    try {
+    setState(() {
+      _isLoading = true;
+    });
+    // Access email and password using _emailController.text and _passwordController.text
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    CashbuddyUser data = CashbuddyUser(email: email, password: password);
+
+    final future = ref.read(authUserProvider.notifier).loginUser(data);
+
+    // print(future);
+    future.then((value) {
+      print({value});
+      print(value['success']);
+      if (value['success']) {
+        Navigator.of(context).popUntil((route) => route.isFirst);
+        Navigator.pushReplacementNamed(context, authenticatedRoute);
+      } else {
+        _showErrorModal(
+            value['message'] ?? "An error occured when logging you in");
+      }
       setState(() {
-        _isLoading = true;
+        _isLoading = false;
       });
-      // Access email and password using _emailController.text and _passwordController.text
-      String email = _emailController.text;
-      String password = _passwordController.text;
-
-      CashbuddyUser data = CashbuddyUser(
-          email: _emailController.text, password: _passwordController.text);
-
-      final future = ref.read(authUserProvider.notifier).loginUser(data);
-
-      // We store that future in the local state
+    }).catchError((e) {
       setState(() {
-        // _isLoading = future;
+        _isLoading = false;
       });
-      future.then((value) {
-        print(value['success']);
-        if (value['success']) {
-          Navigator.of(context).popUntil((route) => route.isFirst);
-          Navigator.pushReplacementNamed(context, authenticatedRoute);
-        } else {
-          _showErrorModal(
-              value['message'] ?? "An error occured when logging you in");
-        }
-        setState(() {
-          _isLoading = false;
-        });
-      }).catchError((e) {
-        setState(() {
-          _isLoading = false;
-        });
-        print("Something went wrong");
-        print(e);
-      });
-    } catch (e) {
-      print("Something went wrongaa");
+      print("Something went wrong login");
       print(e);
-    }
-    // finally {
-    //   setState(() {
-    //     _isLoading = false;
-    //   });
-    // }
+    });
   }
 
   @override

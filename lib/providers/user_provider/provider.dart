@@ -121,7 +121,7 @@ class AuthUser extends _$AuthUser {
 
       print({response});
       if (response.statusCode != 200) {
-        print("Something went wrong");
+        print("Something went wrong provider");
       }
 
       final userResponse = response.data['data'];
@@ -135,7 +135,6 @@ class AuthUser extends _$AuthUser {
       prefs.setString('user', jsonEncode(dataToSave));
       ref.read(authProvider.notifier).loginAuthUser(auth);
       state = AsyncData(user);
-
       return response.data;
     } catch (e) {
       final error = e as DioException;
@@ -175,26 +174,29 @@ class AuthUser extends _$AuthUser {
 
   Future<dynamic> resetPassword(CashbuddyUser data) async {
     try {
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
       final response = await cashbuddyFetch.dio
           .post('/auth/reset-password', data: data.toJson());
 
-      print({response});
       if (response.statusCode != 200) {
         print("Something went wrong");
       }
 
-      final userResponse = response.data['data'];
-      final user = User.fromJson(userResponse);
+      return response.data;
+    } catch (e) {
+      final error = e as DioException;
+      return error.response!.data;
+    }
+  }
 
-      AuthModel auth = AuthModel(
-          token: userResponse['token'], refreshToken: '', isLoggedIn: true);
+  Future<dynamic> verifyResetPassword(CashbuddyUser data) async {
+    try {
+      print(data.toJson());
+      final response = await cashbuddyFetch.dio
+          .post('/auth/verify-reset-password', data: data.toJson());
 
-      final dataToSave = userResponse;
-      dataToSave['id'] = userResponse['_id'];
-      prefs.setString('user', jsonEncode(dataToSave));
-      ref.read(authProvider.notifier).loginAuthUser(auth);
-      state = AsyncData(user);
+      if (response.statusCode != 200) {
+        print("Something went wrong");
+      }
 
       return response.data;
     } catch (e) {

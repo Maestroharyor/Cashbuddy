@@ -52,6 +52,7 @@ class CashbuddyUser {
   final String? userRole;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final String? otp;
   final int? v;
   final String? token;
 
@@ -67,6 +68,7 @@ class CashbuddyUser {
     this.userRole,
     this.createdAt,
     this.updatedAt,
+    this.otp,
     this.v,
     this.token,
   });
@@ -82,6 +84,7 @@ class CashbuddyUser {
     if (phoneNumber != null) data['phoneNumber'] = phoneNumber;
     if (country != null) data['country'] = country;
     if (userRole != null) data['userRole'] = userRole;
+    if (otp != null) data['otp'] = otp;
 
     return data;
   }

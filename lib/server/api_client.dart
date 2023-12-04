@@ -20,7 +20,7 @@ class DioInstance {
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) {
         print('Sending request to ${options.uri}');
-
+        // print(options.data);
         handler.next(options);
       },
       onResponse: (response, handler) {

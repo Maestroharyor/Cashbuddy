@@ -30,3 +30,31 @@ String formatCurrency(int amount) {
   final formatter = NumberFormat('#,##0', 'en_US');
   return formatter.format(amount);
 }
+
+String formatDuration(int seconds) {
+  if (seconds < 0) {
+    return "Invalid duration";
+  }
+
+  int hours = seconds ~/ 3600;
+  int remainingSeconds = seconds % 3600;
+  int minutes = remainingSeconds ~/ 60;
+  int remainingSecondsInMinute = remainingSeconds % 60;
+
+  List<String> parts = [];
+
+  if (hours > 0) {
+    parts.add('$hours ${hours == 1 ? 'hour' : 'hours'}');
+  }
+
+  if (minutes > 0) {
+    parts.add('$minutes ${minutes == 1 ? 'minute' : 'minutes'}');
+  }
+
+  if (remainingSecondsInMinute > 0 || seconds == 0) {
+    parts.add(
+        '$remainingSecondsInMinute ${remainingSecondsInMinute == 1 ? 'second' : 'seconds'}');
+  }
+
+  return parts.join(', ');
+}

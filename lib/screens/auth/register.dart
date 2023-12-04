@@ -184,7 +184,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     TextButton(
                       onPressed: () {
                         // Navigate to the Register screen
-                        Navigator.pushNamed(context, loginRoute);
+                        Navigator.popUntil(context, (route) => route.isFirst);
+                        Navigator.pushReplacementNamed(context, loginRoute);
                         // if (Navigator.canPop(context)) {
                         //   Navigator.pop(context);
                         // } else {
