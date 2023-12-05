@@ -17,10 +17,12 @@ class AuthUser extends _$AuthUser {
   @override
   Future<User> build() async {
     final AsyncValue<AuthModel> token = ref.watch(authProvider);
+    final AsyncValue<User> userToWatch = ref.watch(authUserProvider);
     try {
       // if (token.value!.token.isEmpty) {
       //   throw "Something went wrong";
       // }
+
       if (token.value!.token.isEmpty) {
         return User(
           userId: "",
@@ -35,6 +37,11 @@ class AuthUser extends _$AuthUser {
           updatedAt: DateTime.now(),
         );
       }
+
+      if (userToWatch.value != null) {
+        return userToWatch.value!;
+      }
+
       cashbuddyFetch.setToken(token.value?.token ?? "");
       final response = await cashbuddyFetch.dio.get('/users/profile');
 
@@ -82,6 +89,7 @@ class AuthUser extends _$AuthUser {
 
       ref.read(authProvider.notifier).loginAuthUser(auth);
       state = AsyncData(user);
+      print("USer data updated");
       // ref.invalidateSelf();
       // await future;
     } catch (e) {
